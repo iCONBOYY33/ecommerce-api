@@ -21,7 +21,9 @@ model Product {
 model Order {
   id         String   @id @default(uuid())
   totalPrice Float
+  status     String   @default("PENDING")
   createdAt  DateTime @default(now())
+  userId     String   
 
   items      OrderItem[]
 }

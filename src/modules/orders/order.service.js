@@ -53,7 +53,37 @@ export const OrderService = {
 
     return OrderRepository.create({
       totalPrice,
+      userId: data.userId,
       items: orderItemsData,
     });
+  },
+  async getAllOrders() {
+    return OrderRepository.findAll();
+  },
+  async getOrderById(id) {
+    return OrderRepository.findById(id);
+  },
+
+  async removeOrder(id) {
+    const order = await OrderRepository.findById(id);
+
+    if (!order) {
+      throw new Error("Order not found");
+     }
+
+    // 🔥 Step 1: validate status
+    if (order.status !== "PENDING") {
+      throw new Error("Order cannot be deleted (not PENDING)");
+    }
+
+
+    // 🔥 STEP 2: remove from storage
+    await OrderRepository.removeOrder(id);
+
+    // 🔥 STEP 3: return success
+    return {
+      success: true,
+      message: "Order deleted successfully",
+    };
   },
 };
